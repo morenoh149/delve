@@ -2,6 +2,7 @@
 #include <libproc.h>
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
+#include <fcntl.h>
 #include "mach_exc.h"
 #include "exc.h"
 
