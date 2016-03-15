@@ -16,6 +16,8 @@ fork_exec(char *argv0, char **argv, int size,
 		kret = acquire_mach_task(pid, task, port_set, exception_port, notification_port);
 		if (kret != KERN_SUCCESS) return -1;
 
+		sleep(2);
+
 		return pid;
 	}
 
