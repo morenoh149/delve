@@ -13,7 +13,9 @@ fork_exec(char *argv0, char **argv, int size,
 	// back to Go-land when we call exec, effectively eliminating a race condition between launching the new
 	// process and trying to read its memory.
 	int wfd[2];
-	if (pipe2(wfd, O_CLOEXEC) < 0) return -1;
+	if (pipe(wfd) < 0) return -1;
+	if (fcntl(wfd[0], FD_CLOEXEC) < 0) return -1;
+	if (fcntl(wfd[1], FD_CLOEXEC) < 0) return -1;
 
 	kern_return_t kret;
 	pid_t pid = fork();
