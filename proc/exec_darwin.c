@@ -16,7 +16,7 @@ fork_exec(char *argv0, char **argv, int size,
 		kret = acquire_mach_task(pid, task, port_set, exception_port, notification_port);
 		if (kret != KERN_SUCCESS) return -1;
 
-		sleep(2);
+		sleep(5);
 
 		return pid;
 	}
@@ -26,7 +26,7 @@ fork_exec(char *argv0, char **argv, int size,
 
 	// Create a new process group.
 	if (setpgid(0, 0) < 0) {
-		return -1;
+		exit(1);
 	}
 
 	// Set errno to zero before a call to ptrace.
@@ -34,15 +34,15 @@ fork_exec(char *argv0, char **argv, int size,
 	// for successful calls.
 	errno = 0;
 	pret = ptrace(PT_TRACE_ME, 0, 0, 0);
-	if (pret != 0 && errno != 0) return -errno;
+	if (pret != 0 && errno != 0) exit(2);
 
 	errno = 0;
 	pret = ptrace(PT_SIGEXC, 0, 0, 0);
-	if (pret != 0 && errno != 0) return -errno;
+	if (pret != 0 && errno != 0) exit(2);
 
 	// Create the child process.
 	execve(argv0, argv, environ);
 
 	// We should never reach here, but if we did something went wrong.
-	exit(1);
+	exit(3);
 }
