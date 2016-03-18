@@ -3,21 +3,11 @@
 extern char** environ;
 
 int
-fork_exec(char *argv0, char **argv, int size,
-		mach_port_name_t *task,
-		mach_port_t *port_set,
-		mach_port_t *exception_port,
-		mach_port_t *notification_port)
-{
+fork_exec(char *argv0, char **argv, int size) {
 	kern_return_t kret;
 	pid_t pid = vfork();
 	if (pid > 0) {
 		// In parent.
-		kret = acquire_mach_task(pid, task, port_set, exception_port, notification_port);
-		if (kret != KERN_SUCCESS) return -1;
-
-		sleep(5);
-
 		return pid;
 	}
 

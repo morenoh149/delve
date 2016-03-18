@@ -9,12 +9,13 @@ import (
 	"debug/gosym"
 	"errors"
 	"fmt"
-	"golang.org/x/debug/macho"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sync"
 	"unsafe"
+
+	"golang.org/x/debug/macho"
 
 	"github.com/derekparker/delve/dwarf/frame"
 	"github.com/derekparker/delve/dwarf/line"
@@ -62,14 +63,21 @@ func Launch(cmd []string) (*Process, error) {
 	dbp := New(0)
 	var pid int
 	dbp.execPtraceFunc(func() {
-		ret := C.fork_exec(argv0, &argvSlice[0], C.int(len(argvSlice)),
-			&dbp.os.task, &dbp.os.portSet, &dbp.os.exceptionPort,
-			&dbp.os.notificationPort)
+		ret := C.fork_exec(argv0, &argvSlice[0], C.int(len(argvSlice)))
 		pid = int(ret)
 	})
 	if pid <= 0 {
 		return nil, fmt.Errorf("could not fork/exec")
 	}
+	dbp.wait(pid, 0)
+
+	kret := C.acquire_mach_task(pid,
+		&dbp.os.task, &dbp.os.portSet, &dbp.os.exceptionPort,
+		&dbp.os.notificationPort)
+	if kret != C.KERN_SUCCESS {
+		return nil, fmt.Errorf("could not acquire mach task")
+	}
+
 	dbp.Pid = pid
 	for i := range argvSlice {
 		C.free(unsafe.Pointer(argvSlice[i]))
