@@ -11,15 +11,15 @@ func forkExec(argv0 string, argv []string, env []string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	argvb, err := syscall.BytePtrFromStrings(argv)
+	argvb, err := syscall.SlicePtrFromStrings(argv)
 	if err != nil {
 		return 0, err
 	}
-	envb, err := syscall.BytePtrFromStrings(env)
+	envb, err := syscall.SlicePtrFromStrings(env)
 	if err != nil {
 		return 0, err
 	}
-	r1, r2, err1 = syscall.RawSyscall(syscall.SYS_FORK, 0, 0, 0)
+	r1, r2, err1 := syscall.RawSyscall(syscall.SYS_FORK, 0, 0, 0)
 	if err1 != 0 {
 		return 0, err1
 	}
