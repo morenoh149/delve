@@ -1,3 +1,5 @@
+package proc
+
 import (
 	"os"
 	"syscall"
