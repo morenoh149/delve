@@ -50,4 +50,5 @@ func forkExec(argv0 string, argv []string, env []string) int {
 	if err1 != 0 {
 		os.Exit(3)
 	}
+	return 0
 }
