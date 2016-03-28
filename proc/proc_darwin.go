@@ -70,11 +70,8 @@ func Launch(cmd []string) (*Process, error) {
 	}
 
 	dbp.Pid = pid
-	for i := range argvSlice {
-		C.free(unsafe.Pointer(argvSlice[i]))
-	}
 
-	dbp, err = initializeDebugProcess(dbp, argv0Go, false)
+	dbp, err = initializeDebugProcess(dbp, argv0, false)
 	if err != nil {
 		return nil, err
 	}
