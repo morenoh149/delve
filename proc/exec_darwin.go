@@ -25,7 +25,7 @@ func forkExec(argv0 string, argv []string, env []string) (int, error) {
 	}
 	if r2 == 0 {
 		// In parent.
-		return r1, nil
+		return int(r1), nil
 	}
 	_, _, err1 := syscall.RawSyscall(syscall.SYS_PTRACE, uintptr(syscall.PTRACE_TRACEME), 0, 0)
 	if err1 != 0 {
