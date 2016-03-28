@@ -71,7 +71,7 @@ func Launch(cmd []string) (*Process, error) {
 	}
 	dbp.wait(pid, 0)
 
-	kret := C.acquire_mach_task(pid,
+	kret := C.acquire_mach_task(C.int(pid),
 		&dbp.os.task, &dbp.os.portSet, &dbp.os.exceptionPort,
 		&dbp.os.notificationPort)
 	if kret != C.KERN_SUCCESS {
