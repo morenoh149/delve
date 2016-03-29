@@ -32,12 +32,17 @@ acquire_mach_task(int tid,
 	mach_port_t prev_not;
 	mach_port_t self = mach_task_self();
 
+	puts("about to do task for pid");
+	printf("PID IS %d\n", tid);
 	kret = task_for_pid(self, tid, task);
+	printf("ERROR WAS %s\n", mach_error_string(kret));
 	if (kret != KERN_SUCCESS) return kret;
+	puts("got task for pid");
 
 	// Allocate exception port.
 	kret = mach_port_allocate(self, MACH_PORT_RIGHT_RECEIVE, exception_port);
 	if (kret != KERN_SUCCESS) return kret;
+	puts("got allocate port");
 
 	kret = mach_port_insert_right(self, *exception_port, *exception_port, MACH_MSG_TYPE_MAKE_SEND);
 	if (kret != KERN_SUCCESS) return kret;

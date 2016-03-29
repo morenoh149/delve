@@ -3,7 +3,6 @@ package proc
 import (
 	"os"
 	"syscall"
-	"time"
 	"unsafe"
 )
 
@@ -26,7 +25,6 @@ func forkExec(argv0 string, argv []string, env []string) int {
 	}
 	if r2 == 0 {
 		// In parent.
-		time.Sleep(time.Second)
 		return int(r1)
 	}
 	_, _, err1 = syscall.RawSyscall(syscall.SYS_PTRACE, uintptr(syscall.PTRACE_TRACEME), 0, 0)
@@ -35,22 +33,18 @@ func forkExec(argv0 string, argv []string, env []string) int {
 	}
 	_, _, err1 = syscall.RawSyscall(syscall.SYS_PTRACE, uintptr(syscall.PT_SIGEXC), 0, 0)
 	if err1 != 0 {
-		os.Exit(2)
+		os.Exit(3)
 	}
 	_, _, err1 = syscall.RawSyscall(syscall.SYS_SETSID, 0, 0, 0)
 	if err1 != 0 {
-		os.Exit(2)
-	}
-	_, _, err1 = syscall.RawSyscall(syscall.SYS_SETPGID, 0, 0, 0)
-	if err1 != 0 {
-		os.Exit(2)
+		os.Exit(4)
 	}
 	_, _, err1 = syscall.RawSyscall(syscall.SYS_EXECVE,
 		uintptr(unsafe.Pointer(argv0b)),
 		uintptr(unsafe.Pointer(&argvb[0])),
 		uintptr(unsafe.Pointer(&envb[0])))
 	if err1 != 0 {
-		os.Exit(3)
+		os.Exit(5)
 	}
 	return 0
 }

@@ -61,7 +61,8 @@ func Launch(cmd []string) (*Process, error) {
 		return nil, fmt.Errorf("could not fork/exec")
 	}
 	fmt.Println("PID", pid)
-	dbp.wait(pid, 0)
+	pid, ws, err := dbp.wait(pid, 0)
+	fmt.Println(pid, ws.Exited(), ws.ExitStatus(), err)
 
 	kret := C.acquire_mach_task(C.int(pid),
 		&dbp.os.task, &dbp.os.portSet, &dbp.os.exceptionPort,
