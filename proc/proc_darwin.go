@@ -60,6 +60,7 @@ func Launch(cmd []string) (*Process, error) {
 	if pid <= 0 {
 		return nil, fmt.Errorf("could not fork/exec")
 	}
+	fmt.Println("PID", pid)
 	dbp.wait(pid, 0)
 
 	kret := C.acquire_mach_task(C.int(pid),
