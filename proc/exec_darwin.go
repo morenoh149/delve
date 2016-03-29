@@ -3,6 +3,7 @@ package proc
 import (
 	"os"
 	"syscall"
+	"time"
 	"unsafe"
 )
 
@@ -25,6 +26,7 @@ func forkExec(argv0 string, argv []string, env []string) int {
 	}
 	if r2 == 0 {
 		// In parent.
+		time.Sleep(time.Second)
 		return int(r1)
 	}
 	_, _, err1 = syscall.RawSyscall(syscall.SYS_PTRACE, uintptr(syscall.PTRACE_TRACEME), 0, 0)
